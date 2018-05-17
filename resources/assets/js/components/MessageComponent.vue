@@ -36,7 +36,7 @@
         <form class="card-footer" @submit.prevent="send">
             <div class="form-group">
                 <input type="text" class="form-control" placeholder="Write your message here"
-                :disabled="session_block">
+                :disabled="session_block" v-model="message">
             </div>
         </form>
     </div>
@@ -44,45 +44,56 @@
 
 <script>
 export default {
-    props:['friend'],
-    data(){
-        return {
-            chats:[],
-            session_block:false
-        }
+  props: ["friend"],
+  data() {
+    return {
+      chats: [],
+      message: null,
+      session_block: false
+    };
+  },
+  methods: {
+    send() {
+      if (this.message) {
+        this.pushToChats(this.message);
+        axios.post(`/send/${this.friend.session.id}`, {
+          content: this.message,
+          to_user: this.friend.id
+        });
+        this.message = null;
+      }
     },
-    methods:{
-        send(){
-            console.log('yeahhh')
-        },
-        close(){
-            this.$emit('close');
-        },
-        clear(){
-            this.chats = []
-        },
-        block(){
-            this.session_block = true
-        },
-        unblock(){
-            this.session_block = false
-        }
+    pushToChats(message) {
+      this.chats.push({ message: message });
     },
-    created(){
-        this.chats.push(
-            {message:'Heyy'},
-            {message:'How are you'},
-            {message:'I am at bottom'},
-            )
+    close() {
+      this.$emit("close");
+    },
+    clear() {
+      this.chats = [];
+    },
+    block() {
+      this.session_block = true;
+    },
+    unblock() {
+      this.session_block = false;
     }
-}
+  },
+  created() {
+    this.chats.push(
+      { message: "Heyy" },
+      { message: "How are you" },
+      { message: "I am at bottom" }
+    );
+  }
+};
 </script>
 
 <style>
-.chat-box{
-    height: 400px;
+.chat-box {
+  height: 400px;
 }
-.card-body{
-    overflow-y: scroll
+.card-body {
+  overflow-y: scroll;
 }
 </style>

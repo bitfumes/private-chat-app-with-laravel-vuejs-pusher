@@ -52442,6 +52442,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     var _this2 = this;
 
     this.getFriends();
+
+    Echo.channel("Chat").listen("SessionEvent", function (e) {
+      var friend = _this2.friends.find(function (friend) {
+        return friend.id == e.session_by;
+      });
+      friend.session = e.session;
+    });
+
     Echo.join("Chat").here(function (users) {
       _this2.friends.forEach(function (friend) {
         users.forEach(function (user) {
@@ -52550,7 +52558,7 @@ exports = module.exports = __webpack_require__(48)(false);
 
 
 // module
-exports.push([module.i, "\n.chat-box{\n    height: 400px;\n}\n.card-body{\n    overflow-y: scroll\n}\n", ""]);
+exports.push([module.i, "\n.chat-box {\n  height: 400px;\n}\n.card-body {\n  overflow-y: scroll;\n}\n", ""]);
 
 // exports
 
@@ -52950,34 +52958,45 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['friend'],
-    data: function data() {
-        return {
-            chats: [],
-            session_block: false
-        };
-    },
+  props: ["friend"],
+  data: function data() {
+    return {
+      chats: [],
+      message: null,
+      session_block: false
+    };
+  },
 
-    methods: {
-        send: function send() {
-            console.log('yeahhh');
-        },
-        close: function close() {
-            this.$emit('close');
-        },
-        clear: function clear() {
-            this.chats = [];
-        },
-        block: function block() {
-            this.session_block = true;
-        },
-        unblock: function unblock() {
-            this.session_block = false;
-        }
+  methods: {
+    send: function send() {
+      if (this.message) {
+        this.pushToChats(this.message);
+        axios.post("/send/" + this.friend.session.id, {
+          content: this.message,
+          to_user: this.friend.id
+        });
+        this.message = null;
+      }
     },
-    created: function created() {
-        this.chats.push({ message: 'Heyy' }, { message: 'How are you' }, { message: 'I am at bottom' });
+    pushToChats: function pushToChats(message) {
+      this.chats.push({ message: message });
+    },
+    close: function close() {
+      this.$emit("close");
+    },
+    clear: function clear() {
+      this.chats = [];
+    },
+    block: function block() {
+      this.session_block = true;
+    },
+    unblock: function unblock() {
+      this.session_block = false;
     }
+  },
+  created: function created() {
+    this.chats.push({ message: "Heyy" }, { message: "How are you" }, { message: "I am at bottom" });
+  }
 });
 
 /***/ }),
@@ -53100,11 +53119,28 @@ var render = function() {
       [
         _c("div", { staticClass: "form-group" }, [
           _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.message,
+                expression: "message"
+              }
+            ],
             staticClass: "form-control",
             attrs: {
               type: "text",
               placeholder: "Write your message here",
               disabled: _vm.session_block
+            },
+            domProps: { value: _vm.message },
+            on: {
+              input: function($event) {
+                if ($event.target.composing) {
+                  return
+                }
+                _vm.message = $event.target.value
+              }
             }
           })
         ])

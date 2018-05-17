@@ -64,6 +64,12 @@ export default {
   },
   created() {
     this.getFriends();
+
+    Echo.channel("Chat").listen("SessionEvent", e => {
+      let friend = this.friends.find(friend => friend.id == e.session_by);
+      friend.session = e.session;
+    });
+
     Echo.join(`Chat`)
       .here(users => {
         this.friends.forEach(friend => {
