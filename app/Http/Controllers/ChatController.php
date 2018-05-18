@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Session;
 use Illuminate\Http\Request;
 use App\Http\Resources\ChatResource;
+use App\Events\PrivateChatEvent;
 
 class ChatController extends Controller
 {
@@ -12,9 +13,11 @@ class ChatController extends Controller
     {
         $message = $session->messages()->create(['content' => $request->content]);
 
-        $message->createForSend($session->id);
+        $chat = $message->createForSend($session->id);
 
         $message->createForReceive($session->id, $request->to_user);
+
+        broadcast(new PrivateChatEvent($message->content, $chat));
 
         return response($message, 200);
     }

@@ -29,7 +29,7 @@
             <!-- Options Ends -->
         </div>
         <div class="card-body" v-chat-scroll>
-            <p class="card-text" :class="{'text-right':chat.type == 0}" v-for="chat in chats" :key="chat.message">
+            <p class="card-text" :class="{'text-right':chat.type == 0}" v-for="chat in chats" :key="chat.id">
                 {{chat.message}}
             </p>
         </div>
@@ -86,6 +86,13 @@ export default {
   },
   created() {
     this.getAllMessages();
+
+    Echo.private(`Chat.${this.friend.session.id}`).listen(
+      "PrivateChatEvent",
+      e => {
+        this.chats.push({ message: e.content, type: 1, sent_at: "Just Now" });
+      }
+    );
   }
 };
 </script>
