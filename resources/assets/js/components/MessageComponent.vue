@@ -29,7 +29,7 @@
             <!-- Options Ends -->
         </div>
         <div class="card-body" v-chat-scroll>
-            <p class="card-text" :class="{'text-right':chat.type == 0}" v-for="chat in chats" :key="chat.id">
+            <p class="card-text" :class="{'text-right':chat.type == 0,'text-success':chat.read_at!=null}" v-for="chat in chats" :key="chat.id">
                 {{chat.message}}
             </p>
         </div>
@@ -56,10 +56,12 @@ export default {
     send() {
       if (this.message) {
         this.pushToChats(this.message);
-        axios.post(`/send/${this.friend.session.id}`, {
-          content: this.message,
-          to_user: this.friend.id
-        });
+        axios
+          .post(`/send/${this.friend.session.id}`, {
+            content: this.message,
+            to_user: this.friend.id
+          })
+          .then(res => (this.chats[this.chats.length - 1].id = res.data));
         this.message = null;
       }
     },
@@ -95,9 +97,15 @@ export default {
     Echo.private(`Chat.${this.friend.session.id}`).listen(
       "PrivateChatEvent",
       e => {
-        this.read();
+        this.friend.session.open ? this.read() : "";
         this.chats.push({ message: e.content, type: 1, sent_at: "Just Now" });
       }
+    );
+
+    Echo.private(`Chat.${this.friend.session.id}`).listen("MsgReadEvent", e =>
+      this.chats.forEach(
+        chat => (chat.id == e.chat.id ? (chat.read_at = e.chat.read_at) : "")
+      )
     );
   }
 };

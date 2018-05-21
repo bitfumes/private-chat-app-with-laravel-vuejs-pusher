@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ChatResource;
 use App\Events\PrivateChatEvent;
 use Carbon\Carbon;
+use App\Events\MsgReadEvent;
 
 class ChatController extends Controller
 {
@@ -20,7 +21,7 @@ class ChatController extends Controller
 
         broadcast(new PrivateChatEvent($message->content, $chat));
 
-        return response($message, 200);
+        return response($chat->id, 200);
     }
 
     public function chats(Session $session)
@@ -33,7 +34,8 @@ class ChatController extends Controller
         $chats = $session->chats->where('read_at', null)->where('type', 0)->where('user_id', '!=', auth()->id());
 
         foreach ($chats as $chat) {
-            $chat->update(['read_at'=> Carbon::now()]);
+            $chat->update(['read_at' => Carbon::now()]);
+            broadcast(new MsgReadEvent(new ChatResource($chat), $chat->session_id));
         }
     }
 }
