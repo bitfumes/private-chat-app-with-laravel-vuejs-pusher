@@ -52977,11 +52977,18 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   data: function data() {
     return {
       chats: [],
-      message: null,
-      session_block: false
+      message: null
     };
   },
 
+  computed: {
+    session: function session() {
+      return this.friend.session;
+    },
+    can: function can() {
+      return this.session.blocked_by == authId;
+    }
+  },
   methods: {
     send: function send() {
       var _this = this;
@@ -53016,16 +53023,26 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     block: function block() {
-      this.session_block = true;
-    },
-    unblock: function unblock() {
-      this.session_block = false;
-    },
-    getAllMessages: function getAllMessages() {
       var _this3 = this;
 
+      this.session.block = true;
+      axios.post("/session/" + this.friend.session.id + "/block").then(function (res) {
+        return _this3.session.blocked_by = authId;
+      });
+    },
+    unblock: function unblock() {
+      var _this4 = this;
+
+      this.session.block = false;
+      axios.post("/session/" + this.friend.session.id + "/unblock").then(function (res) {
+        return _this4.session.blocked_by = null;
+      });
+    },
+    getAllMessages: function getAllMessages() {
+      var _this5 = this;
+
       axios.post("/session/" + this.friend.session.id + "/chats").then(function (res) {
-        return _this3.chats = res.data.data;
+        return _this5.chats = res.data.data;
       });
     },
     read: function read() {
@@ -53033,21 +53050,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     }
   },
   created: function created() {
-    var _this4 = this;
+    var _this6 = this;
 
     this.read();
 
     this.getAllMessages();
 
     Echo.private("Chat." + this.friend.session.id).listen("PrivateChatEvent", function (e) {
-      _this4.friend.session.open ? _this4.read() : "";
-      _this4.chats.push({ message: e.content, type: 1, sent_at: "Just Now" });
+      _this6.friend.session.open ? _this6.read() : "";
+      _this6.chats.push({ message: e.content, type: 1, sent_at: "Just Now" });
     });
 
     Echo.private("Chat." + this.friend.session.id).listen("MsgReadEvent", function (e) {
-      return _this4.chats.forEach(function (chat) {
+      return _this6.chats.forEach(function (chat) {
         return chat.id == e.chat.id ? chat.read_at = e.chat.read_at : "";
       });
+    });
+
+    Echo.private("Chat." + this.friend.session.id).listen("BlockEvent", function (e) {
+      return _this6.session.block = e.blocked;
     });
   }
 });
@@ -53062,9 +53083,9 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "card card-default chat-box" }, [
     _c("div", { staticClass: "card-header" }, [
-      _c("b", { class: { "text-danger": _vm.session_block } }, [
+      _c("b", { class: { "text-danger": _vm.session.block } }, [
         _vm._v("\n            " + _vm._s(_vm.friend.name) + "\n            "),
-        _vm.session_block ? _c("span", [_vm._v("(Blocked)")]) : _vm._e()
+        _vm.session.block ? _c("span", [_vm._v("(Blocked)")]) : _vm._e()
       ]),
       _vm._v(" "),
       _c(
@@ -53096,7 +53117,7 @@ var render = function() {
             attrs: { "aria-labelledby": "dropdownMenuButton" }
           },
           [
-            _vm.session_block
+            _vm.session.block && _vm.can
               ? _c(
                   "a",
                   {
@@ -53111,7 +53132,10 @@ var render = function() {
                   },
                   [_vm._v("UnBlock")]
                 )
-              : _c(
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.session.block
+              ? _c(
                   "a",
                   {
                     staticClass: "dropdown-item",
@@ -53124,7 +53148,8 @@ var render = function() {
                     }
                   },
                   [_vm._v("Block")]
-                ),
+                )
+              : _vm._e(),
             _vm._v(" "),
             _c(
               "a",
@@ -53200,7 +53225,7 @@ var render = function() {
             attrs: {
               type: "text",
               placeholder: "Write your message here",
-              disabled: _vm.session_block
+              disabled: _vm.session.block
             },
             domProps: { value: _vm.message },
             on: {
