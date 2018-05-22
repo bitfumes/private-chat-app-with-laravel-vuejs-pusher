@@ -31,6 +31,8 @@
         <div class="card-body" v-chat-scroll>
             <p class="card-text" :class="{'text-right':chat.type == 0,'text-success':chat.read_at!=null}" v-for="chat in chats" :key="chat.id">
                 {{chat.message}}
+                <br>
+                <span style="font-size:8px">{{chat.read_at}}</span>
             </p>
         </div>
         <form class="card-footer" @submit.prevent="send">
@@ -66,13 +68,20 @@ export default {
       }
     },
     pushToChats(message) {
-      this.chats.push({ message: message, type: 0, sent_at: "Just Now" });
+      this.chats.push({
+        message: message,
+        type: 0,
+        read_at: null,
+        sent_at: "Just Now"
+      });
     },
     close() {
       this.$emit("close");
     },
     clear() {
-      this.chats = [];
+      axios
+        .post(`/session/${this.friend.session.id}/clear`)
+        .then(res => (this.chats = []));
     },
     block() {
       this.session_block = true;
