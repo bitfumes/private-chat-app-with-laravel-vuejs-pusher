@@ -14026,9 +14026,9 @@ window.Popper = __webpack_require__(3).default;
  */
 
 try {
-  window.$ = window.jQuery = __webpack_require__(4);
+    window.$ = window.jQuery = __webpack_require__(4);
 
-  __webpack_require__(17);
+    __webpack_require__(17);
 } catch (e) {}
 
 /**
@@ -14050,9 +14050,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 var token = document.head.querySelector('meta[name="csrf-token"]');
 
 if (token) {
-  window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
+    window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
-  console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
+    console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
 
 /**
@@ -14066,10 +14066,10 @@ if (token) {
 window.Pusher = __webpack_require__(38);
 
 window.Echo = new __WEBPACK_IMPORTED_MODULE_0_laravel_echo___default.a({
-  broadcaster: 'pusher',
-  key: "6f629c950619ca9100c9",
-  cluster: "ap2",
-  encrypted: true
+    broadcaster: 'pusher',
+    key: "6f629c950619ca9100c9",
+    cluster: "ap2",
+    encrypted: true
 });
 
 /***/ }),
@@ -52340,7 +52340,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/ChatComponent.vue"
+Component.options.__file = "resources\\assets\\js\\components\\ChatComponent.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52349,9 +52349,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-ed7b4d44", Component.options)
+    hotAPI.createRecord("data-v-c0ce17c4", Component.options)
   } else {
-    hotAPI.reload("data-v-ed7b4d44", Component.options)
+    hotAPI.reload("data-v-c0ce17c4", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52515,7 +52515,7 @@ var Component = normalizeComponent(
   __vue_scopeId__,
   __vue_module_identifier__
 )
-Component.options.__file = "resources/assets/js/components/MessageComponent.vue"
+Component.options.__file = "resources\\assets\\js\\components\\MessageComponent.vue"
 
 /* hot reload */
 if (false) {(function () {
@@ -52524,9 +52524,9 @@ if (false) {(function () {
   if (!hotAPI.compatible) return
   module.hot.accept()
   if (!module.hot.data) {
-    hotAPI.createRecord("data-v-283a73ed", Component.options)
+    hotAPI.createRecord("data-v-9f063da6", Component.options)
   } else {
-    hotAPI.reload("data-v-283a73ed", Component.options)
+    hotAPI.reload("data-v-9f063da6", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true
@@ -52547,13 +52547,13 @@ var content = __webpack_require__(47);
 if(typeof content === 'string') content = [[module.i, content, '']];
 if(content.locals) module.exports = content.locals;
 // add the styles to the DOM
-var update = __webpack_require__(49)("69af8f70", content, false, {});
+var update = __webpack_require__(49)("1dc9ae32", content, false, {});
 // Hot Module Replacement
 if(false) {
  // When the styles change, update the <style> tags
  if(!content.locals) {
-   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-283a73ed\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MessageComponent.vue", function() {
-     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-283a73ed\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MessageComponent.vue");
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-9f063da6\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MessageComponent.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-9f063da6\",\"scoped\":false,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./MessageComponent.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -52571,7 +52571,7 @@ exports = module.exports = __webpack_require__(48)(false);
 
 
 // module
-exports.push([module.i, "\n.chat-box {\n  height: 400px;\n}\n.card-body {\n  overflow-y: scroll;\n}\n", ""]);
+exports.push([module.i, "\n.chat-box {\r\n  height: 400px;\n}\n.card-body {\r\n  overflow-y: scroll;\n}\r\n", ""]);
 
 // exports
 
@@ -53035,7 +53035,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     block: function block() {
       var _this3 = this;
 
-      this.session.block = true;
+      this.session.blocked = true;
       axios.post("/session/" + this.friend.session.id + "/block").then(function (res) {
         return _this3.session.blocked_by = auth.id;
       });
@@ -53043,7 +53043,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     unblock: function unblock() {
       var _this4 = this;
 
-      this.session.block = false;
+      this.session.blocked = false;
       axios.post("/session/" + this.friend.session.id + "/unblock").then(function (res) {
         return _this4.session.blocked_by = null;
       });
@@ -53078,7 +53078,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     });
 
     Echo.private("Chat." + this.friend.session.id).listen("BlockEvent", function (e) {
-      return _this6.session.block = e.blocked;
+      return _this6.session.blocked = e.blocked;
     });
 
     Echo.private("Chat." + this.friend.session.id).listenForWhisper("typing", function (e) {
@@ -53290,7 +53290,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-283a73ed", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-9f063da6", module.exports)
   }
 }
 
@@ -53387,7 +53387,7 @@ module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
   module.hot.accept()
   if (module.hot.data) {
-    require("vue-hot-reload-api")      .rerender("data-v-ed7b4d44", module.exports)
+    require("vue-hot-reload-api")      .rerender("data-v-c0ce17c4", module.exports)
   }
 }
 

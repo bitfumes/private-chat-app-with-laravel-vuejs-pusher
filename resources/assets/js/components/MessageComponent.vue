@@ -101,13 +101,13 @@ export default {
         .then(res => (this.chats = []));
     },
     block() {
-      this.session.block = true;
+      this.session.blocked = true;
       axios
         .post(`/session/${this.friend.session.id}/block`)
         .then(res => (this.session.blocked_by = auth.id));
     },
     unblock() {
-      this.session.block = false;
+      this.session.blocked = false;
       axios
         .post(`/session/${this.friend.session.id}/unblock`)
         .then(res => (this.session.blocked_by = null));
@@ -142,7 +142,7 @@ export default {
 
     Echo.private(`Chat.${this.friend.session.id}`).listen(
       "BlockEvent",
-      e => (this.session.block = e.blocked)
+      e => (this.session.blocked = e.blocked)
     );
 
     Echo.private(`Chat.${this.friend.session.id}`).listenForWhisper(

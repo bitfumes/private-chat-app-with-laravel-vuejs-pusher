@@ -9,7 +9,7 @@ class BlockController extends Controller
 {
     public function block(Session $session)
     {
-        $session->block();
+        $session->blocked();
         broadcast(new BlockEvent($session->id, true));
         return response(null, 201);
     }
