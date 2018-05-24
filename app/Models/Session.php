@@ -28,7 +28,7 @@ class Session extends Model
         $this->messages()->delete();
     }
 
-    public function block()
+    public function blocked()
     {
         $this->block = true;
         $this->blocked_by = auth()->id();

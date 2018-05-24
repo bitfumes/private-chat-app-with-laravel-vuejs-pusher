@@ -13,11 +13,11 @@ class ChatController extends Controller
 {
     public function send(Session $session, Request $request)
     {
-        $message = $session->messages()->create(['content' => $request->content]);
+        $message = $session->messages()->create(['content' => $request->get('content')]);
 
         $chat = $message->createForSend($session->id);
 
-        $message->createForReceive($session->id, $request->to_user);
+        $message->createForReceive($session->id, $request->get('to_user'));
 
         broadcast(new PrivateChatEvent($message->content, $chat));
 
